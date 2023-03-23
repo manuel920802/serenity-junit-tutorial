@@ -1,5 +1,6 @@
 package serenityswag.authentication;
 
+import net.serenitybdd.core.Serenity;
 import net.serenitybdd.core.steps.UIInteractionSteps;
 import net.serenitybdd.junit.runners.SerenityRunner;
 import net.thucydides.core.annotations.Managed;
@@ -12,6 +13,7 @@ import serenityswag.authentication.actions.LoginActions;
 import serenityswag.inventory.InventoryPage;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static serenityswag.authentication.User.STANDARD_USER;
 
 @RunWith(SerenityRunner.class)
 public class WhenLoggingOn {
@@ -22,6 +24,7 @@ public class WhenLoggingOn {
     LoginActions login;
     InventoryPage inventoryPage;
 
+    // How to write an action class: Contains different number of methods that performs different actions
     @Test
     public void usersCanLogOnViaTheHomePage(){
        // driver.get("https://www.saucedemo.com/");
@@ -36,10 +39,11 @@ public class WhenLoggingOn {
 //                .isEqualToIgnoringCase("Products");
 
         //Login as a standard user
-        login.asAStandardUser();
+        login.as(STANDARD_USER);
+
         // Should see product catalog
-        assertThat(inventoryPage.getHeading()).isEqualToIgnoringCase("Products");
-
-
+        Serenity.reportThat("The inventory page should be displayed with the correct title",
+                () -> assertThat(inventoryPage.getHeading()).isEqualToIgnoringCase("Products")
+        );
     }
 }
