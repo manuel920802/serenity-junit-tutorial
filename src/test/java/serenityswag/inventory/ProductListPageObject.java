@@ -18,7 +18,11 @@ public class ProductListPageObject extends PageObject {
         find(By.linkText(itemName)).click();
 
     }
-
+    /*CSS functions
+     ^= Starts with
+     $= Ends With
+     *= Contains Text
+     */
     public String imageTextForProduct(String productName) {
         return find(By.xpath(("//div[@class='inventory_item'][contains(.,'" + productName + "')]//img"))).getAttribute("alt");
 
