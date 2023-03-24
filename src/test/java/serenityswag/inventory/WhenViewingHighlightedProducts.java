@@ -4,6 +4,7 @@ import net.serenitybdd.junit.runners.SerenityRunner;
 import net.thucydides.core.annotations.Managed;
 import net.thucydides.core.annotations.Steps;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
@@ -34,6 +35,22 @@ public class WhenViewingHighlightedProducts {
             assertThat(productsOnDisplay).hasSize(6)
                                             .contains("Sauce Labs Backpack");
     }
+
+        @Test
+        public void highlightedProductsShouldDisplayTheCorrespondingImages(){
+            login.as(User.STANDARD_USER);
+
+            List<String> productsOnDisplay = productList.titles();
+
+            //It will not fail immediately, it will fail at the end when assertAll is called
+            //If there are two images that don't work, it will report both them
+            SoftAssertions softly = new SoftAssertions();
+            productsOnDisplay.forEach(
+                    productName -> softly.assertThat(productList.imageTextForProduct(productName)).isEqualTo(productName)
+            );
+            softly.assertAll();;
+        }
+
 
         @Test
         public void shouldDisplayCorrectProductDetailsPage(){
