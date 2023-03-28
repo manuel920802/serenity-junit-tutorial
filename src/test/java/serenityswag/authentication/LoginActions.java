@@ -1,7 +1,8 @@
-package serenityswag.authentication.actions;
+package serenityswag.authentication;
 
 import net.serenitybdd.core.steps.UIInteractionSteps;
 import net.thucydides.core.annotations.Step;
+import org.mockito.internal.matchers.Find;
 import org.openqa.selenium.By;
 import serenityswag.authentication.User;
 
@@ -12,9 +13,9 @@ public class LoginActions extends UIInteractionSteps {
         openUrl("https://www.saucedemo.com/");
 
         //Looks for elements by DATA CSS type ($ = replaces find)
-        $("[data-test='username']").sendKeys(user.getUsername());
-        find("[data-test='password']").sendKeys(user.getPassword());
-        find("[data-test='login-button']").click();
+        $(LoginForm.USER_NAME).sendKeys(user.getUsername());
+        $(LoginForm.PASSWORD).sendKeys(user.getPassword());
+        $(LoginForm.LOGIN_BUTTON).click();
 
         //Looks for elements by ID and $ will allow us to use serenity shortcut(#locator)
 //        $(("#user-name")).sendKeys(user.getUsername());
