@@ -1,19 +1,17 @@
-package serenityswag.inventory;
+package serenityswag.cart;
 
 import net.serenitybdd.core.Serenity;
 import net.serenitybdd.junit.runners.SerenityRunner;
 import net.thucydides.core.annotations.Managed;
 import net.thucydides.core.annotations.Steps;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import serenityswag.authentication.LoginActions;
-import serenityswag.authentication.User;
-import serenityswag.cart.AddToCartActions;
-import serenityswag.cart.ShoppingCartBadge;
+import serenityswag.cart.CartActions;
+import serenityswag.cart.ShoppingCartIcon;
+import serenityswag.inventory.ProductList;
 
 import java.util.List;
 
@@ -29,37 +27,57 @@ public class WhenAddingAnItemToTheCart {
     @Steps
     LoginActions login;
 
-    ProductList productList;
-
     @Before
     public void login(){
         login.as(STANDARD_USER);
     }
 
-    ShoppingCartBadge shoppingCartBadge;
+    ShoppingCartIcon shoppingCartBadge;
 
     @Steps
-    AddToCartActions addToCart;
+    CartActions cart;
 
     @Test
     public void theCorrectItemCountShouldBeShown() {
         //Check the shopping cart badge is empty
         Serenity.reportThat("The shopping cart badge should be empty",
-                () ->assertThat(shoppingCartBadge.count()).isEmpty()
+                () ->assertThat(shoppingCartBadge.badgeCount()).isEmpty()
                 );
 
         //Add 1 item to the cart
-        addToCart.item("Sauce Labs Backpack");
+        cart.addItem("Sauce Labs Backpack");
 
         //The Shopping cart badge should be "1"
         Serenity.reportThat("The shopping cart badge should now be '1' ",
-                () -> assertThat(shoppingCartBadge.count()).isEqualTo("1")
+                () -> assertThat(shoppingCartBadge.badgeCount()).isEqualTo("1")
                 );
     }
 
+    ProductList productList;
+
     @Test
     public void allTheItemsShouldAppearInTheCart() {
+        // Add several items to the cart
+        List<String> selectedItems = firstThreeProductTitlesDisplayed();
 
 
+        // Open the cart page
+        cart.addItems(selectedItems);
+
+        String cartBadgeCount = Integer.toString(selectedItems.size());
+        Serenity.reportThat("The shopping cart badge should now be " + selectedItems.size(),
+                () -> assertThat(shoppingCartBadge.badgeCount()).isEqualTo(cartBadgeCount)
+        );
+
+        cart.openCart();
+
+        Serenity.reportThat("Should see all the items listed",
+                () -> assertThat(cart.displayedItems()).containsExactlyElementsOf(selectedItems)
+        );
+
+    }
+
+    private List<String> firstThreeProductTitlesDisplayed() {
+        return productList.titles().subList(0, 3);
     }
 }
