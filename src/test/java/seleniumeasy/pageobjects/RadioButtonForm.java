@@ -2,7 +2,7 @@ package seleniumeasy.pageobjects;
 
 import net.thucydides.core.annotations.DefaultUrl;
 
-@DefaultUrl("https://www.seleniumeasy.com/test/basic-first-form-demo.html")
+@DefaultUrl("https://www.seleniumeasy.com/test/basic-radiobutton-demo.html")
 public class RadioButtonForm extends SeleniumEasyForm {
 
 

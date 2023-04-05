@@ -2,13 +2,14 @@ package seleniumeasy;
 
 import net.serenitybdd.junit.runners.SerenityRunner;
 import net.thucydides.core.annotations.Managed;
-import org.assertj.core.api.Assertions;
+import net.thucydides.core.annotations.Steps;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
+import seleniumeasy.actions.FormPage;
+import seleniumeasy.actions.NavigateActions;
 import seleniumeasy.pageobjects.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.*;
@@ -24,6 +25,9 @@ public class WhenInteractingWithInputForms {
     @Managed(driver = "chrome", uniqueSession = true)
     WebDriver webdriver;
 
+    @Steps
+    NavigateActions navigate;
+
     /**
      * Basic form fields:
      * Enter a message and check that the message is correctly displayed
@@ -33,7 +37,7 @@ public class WhenInteractingWithInputForms {
     SingleInputFieldForm singleInputFieldForm;
     @Test
     public void basicForms() {
-    singleInputFieldForm.open();
+    navigate.to(FormPage.SingleInputFieldForm);
 
     singleInputFieldForm.enterMessage("Hi there");
 
@@ -51,7 +55,7 @@ public class WhenInteractingWithInputForms {
     TwoInputFieldForm twoInputFieldForm;
     @Test
     public void basicFormsWithMultipleFields() {
-    twoInputFieldForm.open();
+    navigate.to(FormPage.TwoInputFieldForm);
 
     twoInputFieldForm.enterA("2");
     twoInputFieldForm.enterB("3");
@@ -70,7 +74,7 @@ public class WhenInteractingWithInputForms {
     CheckboxForm checkboxForm;
     @Test
     public void singleCheckbox() {
-        checkboxForm.open();
+        navigate.to(FormPage.CheckboxForm);
 
         checkboxForm.setAgeSelected();
 
@@ -132,15 +136,49 @@ public class WhenInteractingWithInputForms {
      * Dropdown lists
      * https://www.seleniumeasy.com/test/basic-select-dropdown-demo.html
      */
+
+    SelectListForm selectListForm;
     @Test
     public void selectList() {
+        selectListForm.open();
+
+        assertThat(selectListForm.selectedDay()).isEmpty();
+
+        selectListForm.selectDay("Wednesday");
+
+        assertThat(selectListForm.selectedDay()).isEqualTo("Wednesday");
+
     }
 
     /**
      * Multi-Select Dropdown lists
      * https://www.seleniumeasy.com/test/basic-select-dropdown-demo.html
      */
+
+    MultiSelectListForm multiSelectListForm;
     @Test
     public void multiSelectList() {
+        multiSelectListForm.open();
+
+        assertThat(multiSelectListForm.selectedStates()).isEmpty();
+
+        multiSelectListForm.selectStates("Florida", "Ohio", "Texas");
+
+        assertThat(multiSelectListForm.selectedStates()).containsExactly("Florida", "Ohio", "Texas");
     }
+
+    HoverPage hoverPage;
+    @Test
+    public void hover(){
+        hoverPage.open();
+
+        hoverPage.hoverOverFigure(1);
+        hoverPage.captionForFigure(1).shouldBeVisible();
+        hoverPage.captionForFigure(1).shouldContainText("user1");
+
+        hoverPage.hoverOverFigure(2);
+        hoverPage.captionForFigure(2).shouldBeVisible();
+        hoverPage.captionForFigure(2).shouldContainText("user2");
+    }
+
 }
